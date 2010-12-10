@@ -1,0 +1,176 @@
+Nonterminals useless in grammar
+
+   comment
+
+
+Terminals unused in grammar
+
+   COMMENT
+   ';'
+
+
+Rules useless in grammar
+
+   10 comment: COMMENT
+   11        | ';' COMMENT
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: program instruction
+    2        | /* empty */
+
+    3 instruction: MNEMONIC operand1 COMMA operand
+
+    4 operand: operand1
+    5        | CHAR
+    6        | INT
+    7        | HEXSTR
+
+    8 operand1: REGISTER
+    9         | MEMADDR
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+';' (59)
+error (256)
+COMMENT (258)
+COMMA (259) 3
+REGISTER (260) 8
+MEMADDR (261) 9
+CHAR (262) 5
+INT (263) 6
+HEXSTR (264) 7
+MNEMONIC (265) 3
+
+
+Nonterminals, with rules where they appear
+
+$accept (12)
+    on left: 0
+program (13)
+    on left: 1 2, on right: 0 1
+instruction (14)
+    on left: 3, on right: 1
+operand (15)
+    on left: 4 5 6 7, on right: 3
+operand1 (16)
+    on left: 8 9, on right: 3 4
+
+
+state 0
+
+    0 $accept: . program $end
+
+    $default  reduce using rule 2 (program)
+
+    program  go to state 1
+
+
+state 1
+
+    0 $accept: program . $end
+    1 program: program . instruction
+
+    $end      shift, and go to state 2
+    MNEMONIC  shift, and go to state 3
+
+    instruction  go to state 4
+
+
+state 2
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+state 3
+
+    3 instruction: MNEMONIC . operand1 COMMA operand
+
+    REGISTER  shift, and go to state 5
+    MEMADDR   shift, and go to state 6
+
+    operand1  go to state 7
+
+
+state 4
+
+    1 program: program instruction .
+
+    $default  reduce using rule 1 (program)
+
+
+state 5
+
+    8 operand1: REGISTER .
+
+    $default  reduce using rule 8 (operand1)
+
+
+state 6
+
+    9 operand1: MEMADDR .
+
+    $default  reduce using rule 9 (operand1)
+
+
+state 7
+
+    3 instruction: MNEMONIC operand1 . COMMA operand
+
+    COMMA  shift, and go to state 8
+
+
+state 8
+
+    3 instruction: MNEMONIC operand1 COMMA . operand
+
+    REGISTER  shift, and go to state 5
+    MEMADDR   shift, and go to state 6
+    CHAR      shift, and go to state 9
+    INT       shift, and go to state 10
+    HEXSTR    shift, and go to state 11
+
+    operand   go to state 12
+    operand1  go to state 13
+
+
+state 9
+
+    5 operand: CHAR .
+
+    $default  reduce using rule 5 (operand)
+
+
+state 10
+
+    6 operand: INT .
+
+    $default  reduce using rule 6 (operand)
+
+
+state 11
+
+    7 operand: HEXSTR .
+
+    $default  reduce using rule 7 (operand)
+
+
+state 12
+
+    3 instruction: MNEMONIC operand1 COMMA operand .
+
+    $default  reduce using rule 3 (instruction)
+
+
+state 13
+
+    4 operand: operand1 .
+
+    $default  reduce using rule 4 (operand)
